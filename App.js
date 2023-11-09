@@ -1,20 +1,50 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { NavigationContainer } from "@react-navigation/native";
+import { createStackNavigator } from "@react-navigation/stack";
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import React, { useEffect } from "react";
+import Database from "./Database";
+import DetailScreen from "./screens/DetailScreen";
+import EntryScreen from "./screens/EntryScreen";
+import HomeScreen from "./screens/HomeScreen";
+import SearchScreen from "./screens/SearchScreen";
 
-export default function App() {
+const Stack = createStackNavigator();
+const Tab = createBottomTabNavigator();
+
+function HomeTab() {
+  
+
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <Tab.Navigator tabBarOptions={{
+      style: {
+        backgroundColor: 'lightgray', // Màu nền của tab bar
+      },
+      labelStyle: {
+        fontSize: 16, // Kích thước font cho label
+      },
+      activeTintColor: 'blue', // Màu cho tab được chọn
+    }}>
+      <Tab.Screen name="Home" component={HomeScreen} />
+      <Tab.Screen name="Search" component={SearchScreen} />
+    </Tab.Navigator>
+  );
+};
+
+const App = () => {
+
+  useEffect(() => {
+    Database.initDatabase();
+  }, []);
+
+  return (
+    <NavigationContainer>
+      <Stack.Navigator initialRouteName="Home">
+        <Stack.Screen name="Home" component={HomeTab} options={{ headerShown: false }}/>
+        <Stack.Screen name="Entry" component={EntryScreen} />
+        <Stack.Screen name="Detail" component={DetailScreen} />    
+      </Stack.Navigator>    
+    </NavigationContainer>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+export default App;
